@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+html,
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.scroll::-webkit-scrollbar {
+  width: 8px; /* width of the entire scrollbar */
+  cursor: pointer;
+}
+
+.scroll::-webkit-scrollbar-track {
+  background-color: rgb(245, 245, 245);
+}
+
+.scroll::-webkit-scrollbar-thumb {
+  --color: rgb(208, 207, 207);
+  background-color: var(--color); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}
+
+.link {
+  @apply text-blue-500 px-4 hover:underline;
+}
+

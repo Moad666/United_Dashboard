@@ -1,0 +1,44 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+
+variables:
+    # Define any environment-specific variables here
+    NEXT_PUBLIC_API_URL: 'https://api.example.com'
+
+before_script:
+    - apt-get update
+    - apt-get install -y nodejs npm
+    - cd front-end
+    - npm install --save-dev jest
+    - npm install eslint prettier eslint-config-prettier eslint-plugin-prettier
+
+stages:
+    - format
+    - quality
+    - build
+    - test
+
+quality:
+    stage: quality
+    script:
+        - npx eslint --fix "src/**/*.{js,jsx,ts,tsx}"
+format:
+    stage: format
+    script:
+        - npx prettier --write '**/*.{js,jsx,ts,tsx,json,css}'
+
+build:
+    stage: build
+    script:
+        - npm install
+        - npm run build
+
+test:
+    stage: test
+    script:
+        - npm test --verbose

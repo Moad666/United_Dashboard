@@ -1,0 +1,27 @@
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "always"
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescriptreact",
+    "javascriptreact",
+    "typescript",
+    "json",
+    "css"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "terminal.integrated.tabs.enabled": true,
+  "javascript.format.semicolons": "remove",
+  "typescript.format.semicolons": "remove",
+  "javascriptreact.format.semicolons": "remove",
+  "typescriptreact.format.semicolons": "remove",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "architercture-dashboard",
+    "projectKey": "architecture-dashboard"
+  },
+  "eslint.options": {
+    "configFile": "front-end/eslintrc.js"
+  },
+}

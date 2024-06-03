@@ -1,0 +1,226 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        Int       @id @default(autoincrement()) // Primary key
+  fullName  String?
+  job       String?
+  role      UserRole  @default(Viewer) // Default role set to Viewer
+  email     String?   @unique
+  phone     String?
+  address   String?
+  password  String?
+  img       String?
+  smes      SME[]
+  comments  Comment[]
+  isVerified   Boolean?  @default(false)
+}
+
+enum UserRole {
+  Viewer
+  Editor
+  Admin
+}
+
+// Define the Applications table
+model Application {
+  id                                  Int                          @id @default(autoincrement()) // Primary key
+  name                                String?
+  appKey                              String                       
+  tierLevel                           String
+  piiData                             Boolean @default(false)
+  pci                                 Boolean @default(false)
+  appNumber                           Int?
+  crosswalkDataMappingLink            String?
+  crosswalkDataMappingAlternativeText String?
+  technicalDocumentLink               String?
+  technicalDocumentAlternativeText    String?
+  architectDiagramLink                String?
+  architectDiagramAlternativeText     String?
+  schemasLink                         String?
+  schemasAlternativeText              String?
+  codeReviewLink                      String?
+  codeReviewAlternativeText           String?
+  whoCallsMe                          String?
+  whoAreMyDependencies                String?
+  eqaTestCases                        Boolean @default(false)
+  linkToApiListLink                   String?
+  linkToApiListAlternativeText        String?
+  notes                               String?
+  creationDate                        DateTime                     @default(now())
+  smes                                SME[]
+  comments                            Comment[]
+  // versions                            ApplicationVersion[]
+  queueManagers                       ApplicationQueueManager[]
+  nodes                               ApplicationNode[] // New field to establish the relationship
+}
+// enum TierLevel {
+//   1 - Critical
+//   2 - Somewhat Critical
+//   3 - Less Critical
+//   4 - Not critical
+// }
+// Define the SME table
+model SME {
+  applicationId Int @default(autoincrement())
+  userId        Int
+  application   Application @relation(fields: [applicationId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
+
+  @@id([applicationId, userId])
+}
+
+// Define the Queue Manager table
+model QueueManager {
+  id                 Int                           @id @default(autoincrement())   // Primary key
+  manager            String
+  port               Int?
+  svrChannel         String?
+  clustered          Boolean
+  ipAddress          String?
+  vip                String?
+  drVip              String?
+  drIp               String?
+  rfhUtilLink        String?
+  environment        Environment
+  runsHere           Int?
+  // versions           QueueManagerVersion[]
+  applications       ApplicationQueueManager[]
+  mqVersions         MQVersion[]
+  externalPartners   ExternalPartner[]
+}
+
+// Define the Applications_QueueManager table
+model ApplicationQueueManager {
+  applicationId   Int
+  queueManagerId  Int
+  application     Application   @relation(fields: [applicationId], references: [id])
+  queueManager    QueueManager @relation(fields: [queueManagerId], references: [id])
+
+  @@id([applicationId, queueManagerId])
+}
+
+// Define the MQ Version table
+model MQVersion {
+  id                Int           @id  @default(autoincrement())// Primary key
+  version           String
+  queueManager      QueueManager @relation(fields: [queueManagerId], references: [id])
+  isSelected        Boolean
+  queueManagerId    Int
+}
+
+// Define the External Partner table
+model ExternalPartner {
+  id               Int                              @id  @default(autoincrement())// Primary key
+  partner          String
+  versions         ExternalPartnerVersion[]
+  queueManager      QueueManager @relation(fields: [queueManagerId], references: [id])
+  queueManagerId    Int
+  // queueManagers    QueueManagerExternalPartner[]
+}
+
+// // Define the Queue Manager External Partner table
+// model QueueManagerExternalPartner {
+//   externalPartnerId Int
+//   queueManagerId    Int
+//   externalPartner   ExternalPartner @relation(fields: [externalPartnerId], references: [id])
+//   queueManager      QueueManager    @relation(fields: [queueManagerId], references: [id])
+//   @@id([externalPartnerId, queueManagerId])
+// }
+
+// Define the Nodes table
+model Node {
+  id            Int           @id @default(autoincrement())// Primary key
+  name          String
+  port          Int?
+  webUi         String?
+  webUiAlternative         String?
+  environment   Environment
+  isName          Int?
+  upgradedDate  DateTime?
+  aceVersions   ACEVersion[]
+  applications    ApplicationNode[]
+}
+
+// Define the ApplicationNode table (Junction Table)
+model ApplicationNode {
+  application    Application   @relation(fields: [applicationId], references: [id])
+  applicationId  Int
+  node           Node          @relation(fields: [nodeId], references: [id])
+  nodeId         Int
+  @@id([applicationId, nodeId])
+}
+
+// Define the ACE Version table
+model ACEVersion {
+  id                 Int                   @id @default(autoincrement())// Primary key
+  version            String
+  node               Node                  @relation(fields: [nodeId], references: [id])
+  isSelected         Boolean
+  // aceVersionVersions ACEVersionVersion[]
+  nodeId             Int
+}
+
+// Define the Comments table
+model Comment {
+  id                     Int         @id @default(autoincrement())// Primary key
+  applicationId          Int
+  userId                 Int
+  comment                String
+  application            Application @relation(fields: [applicationId], references: [id])
+  user                   User        @relation(fields: [userId], references: [id])
+}
+
+// Define the Environment enum
+enum Environment {
+  Dev
+  Test
+  PreProd
+  Prod
+}
+
+// Define the Application Versions table
+// model ApplicationVersion {
+//   id             Int         @id // Primary key
+//   applicationId Int
+//   versionNumber String
+//   description   String?
+//   createdDate   DateTime    @default(now())
+//   application   Application @relation(fields: [applicationId], references: [id])
+// }
+
+// // Define the Queue Manager Versions table
+// model QueueManagerVersion {
+//   id             Int           @id // Primary key
+//   queueManagerId Int
+//   versionNumber String
+//   description   String?
+//   createdDate   DateTime      @default(now())
+//   queueManager  QueueManager @relation(fields: [queueManagerId], references: [id])
+// }
+
+// Define the External Partner Versions table
+model ExternalPartnerVersion {
+  id             Int              @id // Primary key
+  externalPartnerId Int
+  versionNumber  String
+  description    String?
+  createdDate    DateTime         @default(now())
+  externalPartner ExternalPartner @relation(fields: [externalPartnerId], references: [id])
+}
+
+// // Define the ACE Version Versions table
+// model ACEVersionVersion {
+//   id                 Int         @id // Primary key
+//   aceVersionId       Int
+//   versionNumber      String
+//   description        String?
+//   createdDate        DateTime    @default(now())
+//   aceVersion         ACEVersion @relation(fields: [aceVersionId], references: [id])
+// }

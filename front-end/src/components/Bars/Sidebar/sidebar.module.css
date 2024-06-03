@@ -1,0 +1,113 @@
+/* eslint-disable */
+/* global afterAll describe it expect */
+
+.sidebar > *:is(:last-child) {
+  @apply border-t;
+}
+.sidebar > *:is(:first-child) {
+  @apply border-b;
+}
+
+.sidebar {
+  @apply border-r border-gray-200 divide-gray-200;
+  width: 230px;
+  height: 100%;
+  padding: 0px 16px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  gap: 24px;
+}
+.sidebar_logo_contanier {
+  display: flex;
+  align-items: center;
+  height: 86px;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.sidebar_menu {
+  margin-bottom: auto;
+  flex-grow: 1;
+}
+
+.avater_container {
+  height: 88px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  position: relative
+}
+.list_title {
+  @apply text-gray-400;
+  padding: 0px 12px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 18px;
+  text-transform: uppercase;
+  height: 32px;
+}
+
+.list_item {
+  @apply text-gray-500  rounded-md;
+
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+
+  padding: 8px 12px;
+  text-transform: capitalize;
+
+  width: 100%;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+  font-style: normal;
+  font-family: Inter, sans-serif;
+
+  transition: all 300ms ease-in;
+}
+
+.list_item_icon {
+  @apply size-5 text-gray-500 font-medium font-inter mr-2;
+}
+.list_item_name {
+  @apply text-gray-500 font-medium font-inter text-left grow;
+}
+
+.list_item:hover {
+  @apply bg-gray-100 text-gray-700;
+  transition: all 300ms ease-in;
+}
+
+.list_item_active {
+  @apply bg-blue-500 text-white rounded-md;
+
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+
+  padding: 8px 12px;
+  text-transform: capitalize;
+
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 22px;
+  font-style: normal;
+  font-family: Inter, sans-serif;
+
+  transition: all 300ms ease-in;
+}
+
+.list_item_active :is(.list_item_icon, .list_item_name) {
+  @apply size-5 text-white  font-medium font-inter;
+}
+
+.list_container {
+  @apply space-y-1;
+}

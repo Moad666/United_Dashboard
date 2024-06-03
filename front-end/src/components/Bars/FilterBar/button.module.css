@@ -1,0 +1,3 @@
+.btn {
+  @apply font-inter inline-flex items-center text-gray-900 rounded-full border bg-white px-4 py-1.5 text-sm font-medium;
+}
